@@ -10,27 +10,24 @@ struct Planet
 	double diameter;
 	double mass;
 
-	void read(string n, double dist, double diam, double m);
+	void read();
 	void print();
 	double seconds();
 	Planet maxDiameter(int n, Planet planets[]);
 	Planet minMass(int n, Planet planets[]);
+	
 };
 
-void Planet::read(string n, double dist, double diam, double m)
+void Planet::read()
 {
 	cout << "Name: ";
-	cin >> n ;
-	cout << "Distance in kilometers: ";
-	cin >> dist;
+	cin >> name;
 	cout << "Diameter: ";
-	cin >> diam;
+	cin >> diameter;
+	cout << "Distance: ";
+	cin >> distance;
 	cout << "Mass: ";
-	cin >> m;
-	name = n;
-	distance = dist;
-	diameter = diam;
-	mass = m;
+	cin >> mass;
 	cout << endl;
 }
 
@@ -52,38 +49,37 @@ double Planet::seconds()
  Planet maxDiameter(int n, Planet planets[maxSize])
 {
 	int d = 0;
-	double maxDiam = *planets.diameter();
+	double maxDiam = planets[0].diameter;
 	for (int i = 1; i < n; i++)
 	{
-		if (planets[i].diameter() > maxDiam)
+		if (planets[i].diameter > maxDiam)
 			d = i;
 	}
 	return planets[d];
 }
-Planet minMass(int n, Planet planets[])
+ Planet  minMass(int n, Planet planets[])
 {
 	int m = 0;
-	double minM = planets[0].mass();
+	double minM = planets[0].mass;
 	for (int i = 1; i < n; i++)
 	{
-		if (planets[i].mass() < minM)
+		if (planets[i].mass < minM)
+			minM = planets[i].mass;
 			m = i;
 	}
 	return planets[m];
 }
 
-
 int main()
 {
 	Planet planet;
-	planet.read("Jupiter", 816081455, 142984, 500000);
+	//planet.read("Jupiter", 816081455, 142984, 500000);
+	planet.read();
 	planet.print();
 	cout << "Distance from the sun to the planet(in seconds)= " << planet.seconds() << endl;
 	cout << endl;
 
 	int n;
-	//double maxDiameter = planets[0].diameter();
-	//double minMass = planets[0].mass();
 	do
 	{
 		cout << "n= ";
@@ -96,28 +92,23 @@ int main()
 	{
 		string name;
 		double distance, mass, diameter;
-		planets[i].read(name, distance, mass, diameter);
+		planets[i].read();
 	}
-		/*
-		cout << "The planet with the smallest mass: " << endl;
+	cout << "Planets: " << endl;
+	for (int i = 1; i <= n; i++)
+	{
+		planets[i].print();
+	}
+	cout << endl;
+
+		cout << "The planet with the smallest mass is:  " << endl;
 		minMass(n, planets).print();
-		cout << "The planet with the biggest diameter: " << endl;
+		cout << "The planet with the biggest diameter is:  " << endl;
 		maxDiameter(n, planets).print();
 		cout << endl;
-		cout << endl;
-		}
-		cout << endl;
-		*/
-	
-
-		for (int i = 1; i <= n; i++)
-		{
-			cout << "Planets: " << endl;
-			planets[i].print();
-			cout << endl;
-		}
-		cout << endl;   
-//íàìèðàíå íà íàé-ãîëÿì äèàìåòúð è íàé-ìàëêà ìàñà
+		
+		
+//Ð½Ð°Ð¼Ð¸Ñ€Ð°Ð½Ðµ Ð½Ð° Ð½Ð°Ð¹-Ð³Ð¾Ð»ÑÐ¼ Ð´Ð¸Ð°Ð¼ÐµÑ‚ÑŠÑ€ Ð¸ Ð½Ð°Ð¹-Ð¼Ð°Ð»ÐºÐ° Ð¼Ð°ÑÐ°
 /*	for (int j = 0; j < n; j++)
 	{
 		if (maxDiameter > planets[j].diameter())
@@ -125,10 +116,10 @@ int main()
 		if (minMass < planets[j].mass())
 			minMass = planets[j].mass;
 	}
-
 	cout << "The largest diameter is: " << maxDiameter << endl;
 	cout << "The smallest mass is: " << minMass << endl;
 	*/
 	system("pause");
 	return 0;
 }
+
