@@ -1,0 +1,16 @@
+class Metal
+{
+private: 
+	char name[32];
+	double meltingPoint;
+	double boilingPoint;
+public:
+	char* getName();
+	double getMeltP();
+	double getBoilP();
+	void print();
+	void setName();
+	void setMeltP();
+	void setBoilP();
+};
+
