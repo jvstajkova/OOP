@@ -1,0 +1,55 @@
+#include<iostream>
+using namespace std;
+class Point3D
+{
+private:
+	int x; 
+	int y;
+	int z;
+public: 
+	int getX() const;
+	int getY() const;
+	int getZ() const;
+	void setX(int _x);
+	void setY(int _y);
+	void setZ(int _z);
+	Point3D(const Point3D& p);
+};
+int Point3D::getX() const
+{
+	return x;
+}
+int Point3D::getY() const
+{
+	return y;
+}
+int Point3D::getZ() const
+{
+	return z;
+}
+void Point3D :: setX(int _x)
+{
+	x = _x;
+}
+void Point3D::setY(int _y)
+{
+	y = _y;
+}
+void Point3D::setZ(int _z)
+{
+	z = _z;
+}
+Point3D::Point3D(const Point3D& p)
+{
+	this->x = p.getX();
+	this->y = p.getY();
+	this->z = p.getZ();
+}
+
+int main()
+{
+
+	system("pause");
+	return 0;
+}
+
