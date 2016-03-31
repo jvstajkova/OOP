@@ -1,0 +1,94 @@
+#include<iostream>
+using namespace std;
+class Date
+{
+private:
+	int day;
+	int month;
+	int year;
+public:
+	int getDay() const;
+	int getMonth() const;
+	int getYear() const;
+	void setDay(int _x);
+	void setMonth(int _y);
+	void setYear(int _z);
+	Date::Date(int _day = 0, int _month = 0, int _year = 0);
+	Date(const Date& d);
+	void print();
+	bool isDateValid();
+
+};
+int Date::getDay() const
+{
+	return day;
+}
+int Date::getMonth() const
+{
+	return month;
+}
+int Date::getYear() const
+{
+	return year;
+}
+void Date::setDay(int _day)
+{
+	if (_day>=1 && _day<=31)
+	day = _day;
+	else cout << "Invalid day. " << endl;
+}
+void Date::setMonth(int _month)
+{
+	if (_month>=1 && _month<=12)
+	month = _month;
+	else cout << "Invalid month. " << endl;
+}
+void Date::setYear(int _year)
+{
+	if (_year>0 )
+	year = _year;
+	else cout << "Invalid year. " << endl;
+}
+Date::Date(int _day = 0, int _month = 0, int _year = 0)
+{
+	day = _day;
+	month = _month;
+	year = _year;
+}
+Date::Date(const Date& d)
+{
+	this->day = g.getDay();
+	this->month = g.getMonth(); //this -  ukazatel kum daden element
+	this->year = g.getYear();
+}
+void Date::print()
+{
+	cout << day << "." << month << "." << year << endl;
+}
+bool Date::isDateValid()
+{
+	bool visokosna = (year % 4 == 0) && (year % 100 == 0) || (year % 400 == 0);
+	if (visokosna)
+	{
+		if ((month == 2) && (day > 29))	return false;
+		if ((month == 2) && (day >= 1) && (day <= 29)) return true;
+	}
+	else
+	{
+		if ((month == 2) && (day > 28)) return false;
+		if ((month == 2) && (day >= 1) && (day <= 28)) return true;
+	}
+	if ((month == 1) || (month == 3) || (month == 5) || (month == 7) || (month == 8) || (month == 10) || (month == 12) && (day > 31))
+		return false;
+	else return true;
+	if ((month == 4) || (month == 6) || (month == 9) || (month == 11) && (day > 30))
+		return false;
+	else return true;
+}
+
+int main()
+{
+
+	system("pause");
+	return 0;
+}
