@@ -1,0 +1,49 @@
+#include <iostream>
+using namespace std;
+class Complex
+{
+private: 
+	int real;
+	int im;
+public:
+	Complex(int=0, int=0)
+	{
+
+	}
+	Complex operator + (const Complex&) //po stoinost
+	{
+		Complex c;
+		c.real = this->real + c.real;
+		c.im = this->im + c.im;
+	}
+	Complex operator - (const Complex&) // po stoinost
+	{
+		Complex c;
+		c.real = this->real - c.real;
+		c.im = this->im - c.im;
+	}
+	Complex operator + (int);
+	Complex& operator = (const Complex& rhs) //po referenciq
+	{
+		if (this!=&rhs)
+		{
+			real = rhs.real;
+			im = rhs.im;
+		}
+		return (*this);
+	}
+	friend Complex operator + (int, const Complex);
+	friend ostream& operator << (ostream& os, const Complex& a) // ostream e izhodqshtiq potok
+	{
+		os << a.getReal() << " " << a.getImaginary() << endl;
+		return os;
+	}
+	
+};
+
+int main()
+{
+
+	system("pause");
+	return 0;
+}
