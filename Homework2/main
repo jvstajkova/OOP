@@ -1,0 +1,250 @@
+#include<iostream>
+#include<cstring>
+using namespace std;
+const int MAX_SIZE = 20;
+
+class Student
+{
+private: 
+	char *firstName;
+	char *middleName;
+	char *lastName;
+	int age;
+	int facNumber;
+public:
+	string getStudentsFirstName() const 
+	{
+		return firstName;
+	}
+	string getStudentsMiddleName() const
+	{
+		return middleName;
+	}
+	string getStudentsLastName() const
+	{
+		return lastName;
+	}
+	int getAge() const
+	{
+		return age;
+	}
+	int getFacNumber() const
+	{
+		return facNumber;
+	}
+	
+		Student(char *_firstName = "", char *_middleName = "", char *_lastName = "", int _age = 0, int _facNumber = 0) : age(_age), facNumber(_facNumber)
+		{
+			firstName = new char[strlen(_firstName) + 1];
+			strcpy_s(firstName, strlen(firstName), _firstName);
+			middleName = new char[strlen(_middleName) + 1];
+			strcpy_s(middleName, strlen(middleName), _middleName);
+			lastName = new char[strlen(_lastName)+1];
+			strcpy_s(lastName, strlen(lastName), _lastName);			
+		}
+		Student(const Student& stu)
+		{
+			this->age = stu.age;
+			this->facNumber = stu.facNumber;
+			firstName = new char[strlen(stu.firstName) + 1];
+			middleName = new char[strlen(stu.middleName) + 1];
+			lastName = new char[strlen(stu.lastName) + 1];
+			strcpy_s(firstName, strlen(firstName), stu.firstName);
+			strcpy_s(middleName, strlen(middleName), stu.middleName);
+			strcpy_s(lastName, strlen(lastName), stu.lastName);
+		}
+		Student& operator=(const Student& other)
+		{
+			if (this != &other)
+			firstName = new char[strlen(other.firstName) + 1];
+			strcpy_s(firstName, strlen(firstName), other.firstName);
+			middleName = new char[strlen(other.middleName) + 1];
+			strcpy_s(middleName, strlen(middleName), other.middleName);
+			lastName = new char[strlen(other.lastName) + 1];
+			strcpy_s(lastName, strlen(lastName), other.lastName);
+			age = other.age;
+			facNumber = other.facNumber;
+			return (*this);
+
+		}
+		~Student()
+		{
+			delete[] firstName;
+			delete[] middleName;
+			delete[] lastName;
+		}
+	
+	void printStudents()
+	{
+		cout << "Student's name: " << firstName << " " << middleName << " " << lastName << endl;
+	}
+};
+
+class Teacher
+{
+private:
+	char *firstName;
+	char *middleName;
+	char *lastName;
+	char *discipline;
+public:
+	string getFirstName() const
+	{
+		return firstName;
+	}
+	string getMiddleName() const
+	{
+		return middleName;
+	}
+	string getLastName() const
+	{
+		return lastName;
+	}
+	string getDiscipline() const
+	{
+		return discipline;
+	}
+	Teacher(const char *_firstName= "",const char *_middleName="",const char *_lastName="", const char *_discipline="")
+	{
+		firstName = new char[strlen(_firstName) + 1];
+		strcpy_s(firstName, strlen(firstName), _firstName);
+		middleName = new char[strlen(_middleName) + 1];
+		strcpy_s(middleName, strlen(middleName), _middleName);
+		lastName = new char[strlen(_lastName) + 1];
+		strcpy_s(lastName, strlen(lastName), _lastName);
+		discipline = new char[strlen(_discipline) + 1];
+		strcpy_s(discipline, strlen(discipline), _discipline);
+	}
+	Teacher(const Teacher& teach)
+	{
+		firstName = new char[strlen(teach.firstName) + 1];
+		middleName = new char[strlen(teach.middleName) + 1];
+		lastName = new char[strlen(teach.lastName) + 1];
+		strcpy_s(firstName, strlen(firstName), teach.firstName);
+		strcpy_s(middleName, strlen(middleName), teach.middleName);
+		strcpy_s(lastName, strlen(lastName), teach.lastName);
+		discipline = new char[strlen(teach.discipline) + 1];
+		strcpy_s(discipline, strlen(discipline), teach.discipline);
+	}
+	Teacher& operator=(const Teacher& other)
+	{
+		if (this != &other)
+		firstName = new char[strlen(other.firstName) + 1];
+		strcpy_s(firstName, strlen(firstName), other.firstName);
+		middleName = new char[strlen(other.middleName) + 1];
+		strcpy_s(middleName, strlen(middleName), other.middleName);
+		lastName = new char[strlen(other.lastName)+1];
+		strcpy_s(lastName, strlen(lastName), other.lastName);
+		discipline = new char[strlen(other.discipline) + 1];
+		strcpy_s(discipline, strlen(discipline), other.discipline);
+		return (*this);
+	}
+	~Teacher()
+	{
+		delete[] firstName;
+		delete[] middleName;
+		delete[] lastName;
+		delete[] discipline;
+
+	}
+	void printTeacher()
+	{
+		cout << "Teacher's name: " << firstName << " " << middleName << " " << lastName << endl;
+	}
+};
+
+class School
+{
+private:
+	Teacher *teachers;
+	Student *students;
+	int studentsLength;
+	int teachersLength;
+public:
+	School(Student* students, int studentsLength, Teacher* teachers, int teachersLength) 
+	{
+		this->studentsLength = studentsLength;
+		this->teachersLength = teachersLength;
+		this->students = new Student[studentsLength];
+		this->teachers = new Teacher[teachersLength];
+
+		for (int i = 0; i < studentsLength; i++)
+		{
+			this->students[i] = students[i];
+		}
+		for (int j = 0; j < teachersLength; j++)
+		{
+			this->teachers[j] = teachers[j];
+		}
+	}
+	School(const School& s)
+	{
+		School(s.students, s.studentsLength, s.teachers, s.teachersLength);
+	}
+	School& operator =(School& other)
+	{
+		delete[] students;
+		delete[] teachers;
+
+		School *templ = new School(other);
+		*this = *templ;
+		return *this;
+	}
+	~School()
+	{
+		delete[] students;
+		delete[] teachers;
+	}
+	Student studentByFacultyNumber(int facNumber) const
+	{
+		for (int i = 0; i < studentsLength; i++)
+		{
+			if (students[i].getFacNumber() == facNumber)
+			{
+				return students[i];
+			}
+		}
+	}
+	void printStudentsInfo(string firstName, string middleName, string lastName)
+	{
+		
+		for (int i = 0; i < studentsLength; i++)
+		{
+			if ((students[i].getStudentsFirstName().compare(firstName) == 0) && (students[i].getStudentsMiddleName().compare(middleName) == 0) && (students[i].getStudentsLastName().compare(lastName) == 0));
+			{
+				students[i].printStudents();
+			}
+		}
+	}
+	void printTeachersInfo(string discipline)
+	{
+		for (int i = 0; i < teachersLength; i++)
+		{
+			if (teachers[i].getDiscipline().compare(discipline) == 0)
+			{
+				teachers[i].printTeacher();
+			}
+		}
+	}
+};
+
+int main()
+{
+	Student students[5] = { Student("Milko", "Georgiev", "Petrov", 17, 4759325),
+		Student("Krustan", "Dimitrov", "Ivanov", 16, 1156553),
+		Student("Ivan", "Ivanov", "Dimitrov", 17, 5557814), Student("Grozdanka", "Vishneva", "Krushunova",16, 2547783),
+	    Student("Gergana", "Todorova", "Aleksandrova", 17, 5547821)};
+
+	Teacher teachers[5] = { Teacher("Petko", "Petkov", "Georgiev", "Fizika"),
+		Teacher("Nevena", "Aleksieva", "Petrova", "Geometriq"),
+		Teacher("Velichka", "Atanasova", "Georgieva","Muzika"), Teacher("Atanas", "Velkov", "Valentinov", "Psihologiq"),
+	    Teacher("Georgi", "Mihailov", "Velev", "BEL")};
+
+	School school(students, (sizeof(students) / sizeof(*students)), teachers, (sizeof(teachers) / sizeof(*teachers)));
+	school.printTeachersInfo("Geometriq");
+	school.printStudentsInfo("Grozdanka","Vishneva", "Krushunova");
+
+	
+	system("pause");
+	return 0;
+}
