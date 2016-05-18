@@ -1,0 +1,224 @@
+#include <iostream>
+#include <cstring>
+
+using namespace std;
+
+class Person{
+
+protected:
+    char firstName[30];
+    char midleName[30];
+    char lastName[30];
+public:
+
+    Person(){
+
+    }
+    Person(string firstName, string middleName, string lastName){
+        strcpy_s(this->firstName, firstName.c_str());
+        strcpy_s(this->midleName, middleName.c_str());
+        strcpy_s(this->lastName, lastName.c_str());
+    }
+
+    Person(const Person& person) : Person(person.getFirstName(), person.getMidleName(), person.getLastName()){
+
+    }
+
+    Person& operator=(const Person& person){
+        strcpy_s(this->firstName, person.getFirstName().c_str());
+        strcpy_s(this->midleName, person.getMidleName().c_str());
+        strcpy_s(this->lastName, person.getLastName().c_str());
+        return *this;
+    }
+
+    string getFirstName() const{
+        return firstName;
+    }
+
+    string getMidleName() const{
+        return midleName;
+    }
+
+    string getLastName() const{
+        return lastName;
+    }
+
+    virtual void print(){
+        cout << firstName << " " << midleName << " " << lastName << " ";
+    }
+};
+
+class Student : public Person{
+
+    unsigned int age;
+    int schoolNumber;
+
+public:
+    Student(string firstName, string middleName, string lastName, int age, int schoolNumber) : Person(firstName, middleName, lastName){
+        this->age = age;
+        this->schoolNumber = schoolNumber;
+    }
+
+    Student(const Student& student) : Student(student.getFirstName(), student.getMidleName(), student.getLastName(),
+                                              student.getAge(), student.getSchoolNumber()){ }
+
+    Student& operator =(const Student &other)
+    {
+        Person::operator=(other);
+        age = other.age;
+        schoolNumber = other.schoolNumber;
+        return *this;
+    }
+    Student(){
+
+    }
+
+
+    int getAge() const {
+        return age;
+    };
+
+    int getSchoolNumber() const {
+        return schoolNumber;
+    };
+
+    void print(){
+        Person::print();
+        cout << age << " " << schoolNumber << endl;
+    }
+
+};
+
+
+
+class Teacher : public Person{
+    char subject[50];
+
+public:
+    Teacher(){
+
+    }
+
+    Teacher(const Teacher& teacher) : Teacher(teacher.getFirstName(), teacher.getMidleName(), teacher.getLastName(),
+                                              teacher.getSubject()){ }
+
+    Teacher(string firstName, string middleName, string lastName, string subject) : Person(firstName, middleName, lastName){
+        strcpy_s(this->subject, subject.c_str());
+    }
+
+    Teacher& operator =(const Teacher &other)
+    {
+        Person::operator=(other);
+        strcpy_s(this->subject, other.getSubject().c_str());
+        return *this;
+    }
+
+    string getSubject()const {
+        return subject;
+    }
+
+    void print(){
+        Person::print();
+        cout << subject << endl;
+    }
+
+};
+
+class School{
+    Student *students;
+    int studentsSize;
+    Teacher *teachers;
+    int teachersSize;
+
+public:
+
+    School(Student* students,int studentSize, Teacher* teachers, int teacherSize){
+        this->studentsSize = studentSize;
+        this->teachersSize = teacherSize;
+
+        this->students = new Student[studentsSize];
+        this->teachers = new Teacher[teachersSize];
+
+
+        for (int i = 0; i < studentSize; ++i) {
+
+            //not leak memory because of overriding operator "=" in Student
+            this->students[i] = students[i];
+        }
+        for (int i = 0; i < teacherSize; ++i) {
+            this->teachers[i] = teachers[i];
+        }
+    }
+
+
+    School(const School& school){
+        School(school.students, school.studentsSize, school.teachers, school.teachersSize);
+    }
+
+    School& operator =(School &other)
+    {
+        destroyMe();
+        School *temp = new School(other);
+        *this = *temp;
+        return *this;
+
+    }
+
+    Student getStudentBySchoolNumber(int schoolNumber) const {
+        for(int i = 0 ; i < studentsSize; ++i){
+            if(students[i].getSchoolNumber() == schoolNumber){
+                return students[i];
+            }
+        }
+    }
+
+    void printStudentByName(string firstName, string lastName){
+        for(int i = 0 ; i < studentsSize; ++i){
+            if(students[i].getFirstName().compare(firstName) == 0 && students[i].getLastName().compare(lastName) == 0){
+                students[i].print();
+            }
+        }
+    }
+
+    void printTeachersBySubject(string subject){
+
+
+        for(int i = 0 ; i < teachersSize; ++i){
+            if(teachers[i].getSubject().compare(subject) == 0){
+                teachers[i].print();
+            }
+        }
+    }
+
+    void destroyMe(){
+        delete [] students;
+        delete [] teachers;
+    }
+
+    ~School(){
+        destroyMe();
+    }
+
+
+};
+
+
+int main() {
+
+    Student students[3] = {Student("Georgi", "Ivanov", "Ivanov", 11, 12),
+                        Student("Ivan", "Ivanov", "Ivanov", 11, 13),
+                        Student("Petur", "Petrov", "Petrov", 11, 14)};
+
+    Teacher teachers[3] = {Teacher("Georgi", "Ivanov", "Ivanov", "Matematika"),
+            Teacher("Ivan", "Ivanov", "Ivanov", "Istoria"),
+            Teacher("Petur", "Petrov", "Petrov", "Fizika")};
+
+    School school(students,(sizeof(students) / sizeof(*students)), teachers,(sizeof(teachers) / sizeof(*teachers)));
+    school.printTeachersBySubject("Istoria");
+    school.printStudentByName("Georgi", "Ivanov");
+
+    //School school1 = school;
+    //delete &school;
+
+    return 0;
+}
