@@ -1,0 +1,286 @@
+#include<iostream>
+#include<string>
+using namespace std;
+
+class Human
+{
+protected:
+	char* firstName;
+	char* lastName;
+public:
+	Human( char* _firstName , char* _lastName )
+	{
+		int firstNamesLength = strlen(_firstName) + 1;
+		this->firstName = new char[firstNamesLength];
+		strcpy_s(this->firstName,firstNamesLength, _firstName);
+		int lastNamesLength = strlen(_lastName) + 1;
+		this->lastName = new char[lastNamesLength];
+		strcpy_s(this->lastName,lastNamesLength, _lastName);
+	}
+	Human(const Human& other);
+	Human& operator = (const Human& other);
+	~Human();
+
+	char* getFirstName() const;
+	char* getLastName() const;
+	virtual void print()
+	{
+		cout << firstName << " " << lastName << endl;
+	}
+};
+
+Human::Human(const Human& other)
+{
+	int firstNamesLength = strlen(other.getFirstName()) + 1;
+	firstName = new char[firstNamesLength];
+	strcpy_s(firstName,firstNamesLength, other.getFirstName());
+	int lastNamesLength = strlen(other.getLastName()) + 1;
+	lastName = new char[lastNamesLength];
+	strcpy_s(lastName,lastNamesLength, other.getLastName());
+}
+Human& Human::operator=(const Human& other)
+{
+	if (this != &other)
+	{
+		if (firstName)
+		{
+			delete[] firstName;
+		}
+		if (lastName)
+		{
+			delete[] lastName;
+		}
+
+		int firstNamesLength = strlen(other.getFirstName()) + 1;
+		this->firstName = new char[firstNamesLength];
+		strcpy_s(firstName,firstNamesLength, other.getFirstName());
+		int lastNamesLength = strlen(other.getLastName()) + 1;
+		this->lastName = new char[lastNamesLength];
+		strcpy_s(lastName,lastNamesLength, other.getLastName());
+	}
+	return *this;
+}
+Human::~Human()
+{
+	if (firstName)
+	{
+		delete[] firstName;
+	}
+	if (lastName)
+	{
+		delete[] lastName;
+	}
+}
+char* Human::getFirstName() const
+{
+	return firstName;
+}
+char* Human::getLastName() const
+{
+	return lastName;
+}
+
+class Student :public Human
+{
+protected:
+	double grade;
+public:
+	
+	Student( char* _firstName, char* _lastName, double _grade = 2) :Human(_firstName, _lastName)
+	{
+		this->grade = _grade;
+	}
+	~Student()
+	{
+
+	}
+	Student(const Student& other);
+	Student& operator=(const Student& other);
+	double getGrade() const;
+	void print();
+};
+
+Student::Student(const Student& other) :Human(other)
+{
+	grade = other.getGrade();
+}
+Student& Student::operator=(const Student& other)
+{
+	Human::operator =(other);
+	grade = other.getGrade();
+	return *this;
+}
+double Student::getGrade() const
+{
+	return grade;
+}
+void Student::print() 
+{
+	cout << "Student's info: " << endl;
+	Human::print();
+	cout << "Grade: " << getGrade() << endl;
+}
+
+class Worker :public Human
+{
+protected:
+	double weekSalary;
+	int workHoursPerDay;
+public:
+	
+	Worker( char* _firstName ,  char* _lastName , double _weekSalary, int _workHoursPerDay ) :Human(_firstName, _lastName)
+	{
+		this->weekSalary = _weekSalary;
+		this->workHoursPerDay = _workHoursPerDay;
+	}
+	~Worker()
+	{
+
+	}
+	Worker(const Worker& other);
+	Worker& operator=(const Worker& other);
+	double getWeekSalary() const;
+	int getWorkHoursPerDay() const;
+	
+	double moneyPerHour() const;
+	void print() ;
+};
+
+double Worker::getWeekSalary() const
+{
+	return weekSalary;
+}
+int Worker::getWorkHoursPerDay() const
+{
+	return workHoursPerDay;
+}
+Worker::Worker(const Worker& other) :Human(other)
+{
+	weekSalary = other.getWeekSalary();
+	workHoursPerDay = other.getWorkHoursPerDay();
+}
+Worker& Worker::operator=(const Worker& other)
+{
+	Human::operator=(other);
+	weekSalary = other.getWeekSalary();
+	workHoursPerDay = other.getWorkHoursPerDay();
+
+	return *this;
+}
+
+double Worker::moneyPerHour() const
+{
+	//5-dnevna rabotna sedmica
+	double moneyPerDay = weekSalary / 5;
+	return moneyPerDay / workHoursPerDay;
+}
+void Worker::print() 
+{
+	cout << "Worker's info: " << endl;
+	Human::print();
+	cout << "Week salary: " << getWeekSalary() << endl;
+	cout << "Hours of work per day: " << getWorkHoursPerDay() << endl;
+	cout << "Money per hour: " << moneyPerHour() << endl;
+}
+
+void mergedLists(Human** humans, Student* students, Worker* workers)
+{
+	for (int i = 0; i < 10; i++)
+	{
+		humans[i] = new Student(students[i]);
+	}
+
+	for (int i = 0; i < 10; i++)
+	{
+		humans[i + 10] = new Worker(workers[i]);
+	}
+
+	for (int i = 0; i < 20; i++)
+	{
+		for (int j = 0; j < 19; j++)
+
+		{
+			if (humans[j]->getFirstName().compare(humans[j + 1]->getFirstName()) > 0)
+			{
+				Human* h = humans[j];
+				humans[j] = humans[j + 1];
+				humans[j + 1] = h;
+			}
+			else if (humans[j]->getFirstName().compare(humans[j + 1]->getFirstName()) == 0 &&
+				                                       humans[j]->getFirstName().compare(humans[j + 1]->getFirstName()) > 0)
+			{
+				Human* h = humans[j];
+				humans[j] = humans[j + 1];
+				humans[j + 1] = h;
+			}
+		}
+	}
+}
+void studentsSort(Student* students, int studentsSize)
+{
+	for (int i = 0; i < studentsSize; i++)
+	{
+		for (int j = 0; j < studentsSize - 1; j++)
+		{
+			if (students[j].getGrade() > students[j + 1].getGrade())
+			{
+				Student stu = students[j];
+				students[j] = students[j + 1];
+				students[j + 1] = stu;
+			}
+		}
+	}
+}
+void workersSort(Worker* workers, int workersSize)
+{
+	for (int i = 0; i < workersSize; i++)
+	{
+		for (int j = 0; j< workersSize - 1; j++)
+		{
+			if (workers[j].moneyPerHour() < workers[j + 1].moneyPerHour())
+			{
+				Worker work = workers[j];
+				workers[j] = workers[j + 1];
+				workers[j + 1] = work;
+			}
+		}
+	}
+}
+void print(Human** humans, int humansSize){
+	for (int i = 0; i < humansSize; i++)
+	{
+		humans[i]->print();
+	}
+}
+
+
+int main()
+{
+	Worker workers[10] {Worker("Petur", "Nikolov", 5, 7), Worker("Ivanka", "Dimitrova", 6, 8), Worker("Dimitur", "Dimitrov", 4, 6),
+		Worker("Elena", "Ivanova", 5, 9), Worker("Petka", "Ivancheva", 9, 8), Worker("Zdravka", "Dimitrova", 10, 3),
+		Worker("Valentina", "Alexandrova", 13, 10), Worker("Nina", "Panchova", 14, 5), Worker("Georgi", "Georgiev", 12, 8),
+		Worker("Valentin", "Valentinov", 17, 9)};
+
+	Student students[10]{ Student("Ivan", "Ivanov", 5.50), Student("Petur", "Petrov", 4), Student("Alexandur", "Alexandrov", 3),
+		Student("Ivanka", "Ivanova", 5), Student("Petya", "Petrova", 6), Student("Aleksandra", "Aleksandrova", 4.50),
+		Student("Teodor", "Todorov", 2), Student("Todorka", "Mlekanova", 3.50), Student("Daniela", "Georgieva", 5.75),
+		Student("Georgi", "Georgiev", 6)};
+	
+	Human** humans = new Human*[20];
+
+	workersSort(workers, 10);
+	studentsSort(students, 10);
+
+	mergedLists(humans, students, workers);
+
+	for (int i = 0; i < 20; i++)
+	{
+		humans[i]->print();
+	}
+	for (int i = 0; i < 20; i++)
+	{
+		delete humans[i];
+	}
+	system("pause");
+	return 0;
+}
