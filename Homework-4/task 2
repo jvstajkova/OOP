@@ -1,0 +1,120 @@
+#include<iostream>
+#include<stdlib.h>
+using namespace std;
+
+class DoubleVec
+{
+protected:
+	double* vector;
+	int size;
+	int lowerLimit;
+	int upperLimit;
+public:
+	DoubleVec(int sizeOfTheVector)
+	{
+		if (sizeOfTheVector <= 0)
+			cout << "Error! Invalid size of the vector! " << endl;
+		lowerLimit = 0;
+		upperLimit = sizeOfTheVector - 1;
+		size = sizeOfTheVector;
+		vector = new double[sizeOfTheVector];
+	}
+	DoubleVec(const DoubleVec& other)
+	{
+		size = other.size;
+		vector = new double[size];
+		for (int i = 0; i < size; i++)
+		{
+			vector[i] = other.vector[i];
+			lowerLimit = other.lowerLimit;
+			upperLimit = other.upperLimit;
+		}
+	}
+	DoubleVec& operator=(const DoubleVec& other)
+	{
+		if (this != &other)
+		{
+			delete[] vector;
+
+			size = other.size;
+			vector = new double[size];
+
+			for (int i = 0; i < size; i++)
+			{
+				vector[i] = other.vector[i];
+				lowerLimit = other.lowerLimit;
+				upperLimit = other.upperLimit;
+			}
+			return *this;
+		}
+	}
+	~DoubleVec()
+	{
+		delete[] vector;
+	}
+	int getLowerLimit() const
+	{
+		return lowerLimit;
+	}
+	int getUpperLimit() const
+	{
+		return upperLimit;
+	}
+
+	double& operator [](int i)
+	{
+		if ((i<0) || (i>(upperLimit - lowerLimit)))
+		{
+			cout << "Error! Wrong index! " << i << endl;
+		}
+		return vector[i];
+	}
+
+};
+
+class DoubleVector :public DoubleVec
+{
+protected:
+public:
+	DoubleVector(int lower, int upper) :DoubleVec(upper-lower+1)
+	{
+		lowerLimit = lower;
+		upperLimit = upper;
+	}
+	double& operator[](int i)
+	{
+		return DoubleVec::operator[] (i - lowerLimit);
+	}
+};
+
+int main()
+{
+	DoubleVec vector1(5);
+	for (int i = vector1.getLowerLimit(); i <= vector1.getUpperLimit(); i++)
+	{
+		cout << "-->  ";
+		cin >> vector1[i];
+	}
+	for (int i = vector1.getLowerLimit(); i <= vector1.getUpperLimit(); i++)
+	{
+		cout <<vector1[i] << " " ;
+	}
+	cout << endl;
+	cout << endl;
+
+	DoubleVector vector2(10, 19);
+	for (int i = vector2.getLowerLimit(); i <= vector2.getUpperLimit(); i++)
+	{
+		cout << "--> ";
+		cin >> vector2[i];
+	}
+	for (int i = vector2.getLowerLimit(); i <= vector2.getUpperLimit(); i++)
+	{
+		cout << vector2[i] <<" ";
+	}
+	cout << endl;
+	cout << endl;
+
+	system("pause");
+	return 0;
+}
