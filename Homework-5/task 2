@@ -1,0 +1,138 @@
+#include<iostream>
+using namespace std;
+
+class Stack
+{
+public:
+	virtual bool add(int) = 0;
+	virtual bool remove(int&) = 0;
+	virtual int size() = 0;
+	virtual ~Stack()
+	{
+
+	}
+};
+
+class ArrayStack :public Stack
+{
+protected:
+	int count;
+	virtual int* getArray() = 0;
+	virtual bool freeSpace() = 0;
+	virtual bool isEmpty() = 0;
+public: 
+	ArrayStack()
+	{
+		count = 0;
+	}
+	int size()
+	{
+		return count;
+	}
+	bool add(int x)
+	{
+		if (!freeSpace())
+			return false;
+		getArray()[count] = x;
+		count++;
+		return true;
+	}
+	bool remove(int &x)
+	{
+		if (isEmpty())
+			return false;
+		x = getArray()[count - 1];
+		count--;
+		return false;
+	}
+};
+
+class StaticArrayStack : public ArrayStack
+{
+protected:
+	int staticArray[10];
+	bool freeSpace()
+	{
+		return count < 9;
+		
+	}
+	bool isEmpty()
+	{
+		return count == 0;
+	}
+	int* getArray()
+	{
+		return staticArray;
+	}
+public:
+	StaticArrayStack() : ArrayStack()
+	{
+
+	}
+};
+
+class DynamicArrayStack :public ArrayStack
+{
+protected:
+	int capacity;
+	int* dynamicArray;
+	bool increase()
+	{
+		int* newArray = new int[capacity * 2];
+		if (newArray == NULL)
+			return false;
+		for (int i = 0; i < capacity; i++)
+			newArray[i] = dynamicArray[i];
+		int *saveArray = dynamicArray;
+		dynamicArray = newArray;
+		capacity *= 2;
+		delete saveArray;
+		return true;
+	}
+	bool freeSpace()
+	{
+		return count < capacity || increase();
+	}
+	bool isEmpty()
+	{
+		return count == 0;
+	}
+	int* getArray()
+	{
+		return dynamicArray;
+	}
+public:
+	DynamicArrayStack() : ArrayStack()
+	{
+		dynamicArray = new int[10];
+		capacity = 10;
+	}
+	~DynamicArrayStack()
+	{
+		delete dynamicArray;
+	}
+};
+
+int main()
+{
+	int x;
+	StaticArrayStack staticStack;
+	cout << "Insert stack's elements: ";
+	do 
+	cin >> x;
+	while (x != -1 && staticStack.add(x));
+	while (staticStack.remove(x));
+	cout << x << endl;
+
+	DynamicArrayStack dynamicStack;
+	cout << "Insert stack's elements: ";
+	do 
+	cin >> x;
+	while (x != -1 && dynamicStack.add(x));
+	while (dynamicStack.remove(x))
+		cout << x << endl;
+	
+
+	system("pause");
+	return 0;
+}
